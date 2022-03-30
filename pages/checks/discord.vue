@@ -1,8 +1,7 @@
 <template>
   <div class="start">
     <p class="right-align">
-      Currently verifying {{ username || "" }} ({{ osuId || "" }})
-      <strong>Log out?</strong>
+      Currently verifying {{ username || "" }} ({{ osuId || "" }}) | {{ name || "" }}
     </p>
     <div>
       <h1>Connect your Discord account</h1>
@@ -45,10 +44,11 @@ import { IUser } from "~/server/auth/IUser";
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "VerifyStepTwo",
+  name: "VerifyStepThree",
   async asyncData({ req, $axios }: Context) {
     let username = "???";
     let osuId = "???";
+    let name = "/u/???";
     const roles = await $axios.$get(`/api/discord-roles`);
     if (process.server) {
       const r: any = req;
@@ -56,6 +56,7 @@ export default Vue.extend({
         const user: IUser = r.session.passport.user;
         username = user.osu.displayName || "???";
         osuId = user.osu.id || "???";
+        name = ("/u/"+ user.reddit.name) ||"???"
         return { roles, username, osuId };
       }
     }

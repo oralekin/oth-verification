@@ -30,8 +30,8 @@ export abstract class AuthenticationClient {
     }
 
     protected AddRoutes(strategyName: string): void {
-        this.router.get("/", this.middleWare, passport.authenticate(strategyName));
-        this.router.get("/cb", passport.authenticate(strategyName, { failureRedirect: '/'}), this.callbackMiddleWare);
+        this.router.get("/", this.middleWare, passport.authenticate(strategyName, { state: "meme" }));
+        this.router.get("/cb", passport.authenticate(strategyName, {  state: "meme" }), this.callbackMiddleWare);
     }
 
     private ClassOf<T extends AuthenticationClient>(c: T): string {

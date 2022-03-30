@@ -1,41 +1,52 @@
 <template>
   <div class="start">
     <div>
-      <h1> Welcome to {{ tournament.name }} verification.</h1>
+      <h1> Welcome to /r/osuplace verification</h1>
     </div>
     <div>
-      <p>First we need to verify your account!</p>
       <p>
-        You will be asked to login with your osu! account first, and then
+        You will be asked to login with your osu! account first, and then with your Reddit account, and last
         with your Discord account.
       </p>
       <p>Your osu! account information will be used to: </p>
       <ul>
         <li>
-          Verify that you own this account, to prevent impersonation of
-          others
+          Verify that you are an osu! player.
         </li>
         <li>
-          Attach your osu! username as a nickname in the discord server
+          Verify that your osu! account was made before the 2022 April Fools event was announced.
+        </li>
+        <li><s>
+          Verify that your top play is not mapped by Sotarks.
+        </s></li>
+      </ul>
+      <p>Your Reddit account information will be used to: </p>
+      <ul>
+        <li>
+          Read your username to change your Discord nickname to.
+        </li>
+        <li>
+          Verify that your Reddit account was made before this year's event began.
         </li>
       </ul>
       <p>Your Discord account information will be used to: </p>
       <ul>
-        <li>Join your account to the server, if you haven't yet</li>
         <li>
-          Change the nickname on the discord server to your osu! username
+          Join your account to the server, if you haven't yet.
+          </li>
+        <li>
+          Change your nickname on the Discord server to your Reddit username.
         </li>
-        <li>Add role(s) to your user on the server on behalf of the host.</li>
+        <li>Add a role to your user on the server.</li>
       </ul>
     </div>
     <div>
       <p>
         This web site is not endorsed by, directly affiliated with,
-        maintained, authorized, or sponsored by osu!, ppy, or Discord. All
+        maintained, authorized, or sponsored by osu!, ppy, Discord or Reddit. All
         product and company names are the registered trademarks of their
         original owners.
       </p>
-      <p>This is an <strong>unofficial</strong> server.</p>
       <p>By proceeding you will agree to the <strong>functional</strong> use of cookies.</p>
     </div>
     <a
@@ -51,9 +62,8 @@ export default Vue.extend({
   data: () => ({}),
   async asyncData({ req, error, $axios }) {
     let body = {
-      error: '',
-      tournament: {}
-    };
+      error: ''
+};
 
     if (process.server) {
       const request = req as any;
@@ -66,13 +76,7 @@ export default Vue.extend({
       }
     }
 
-    try {
-      const tournament = await $axios.$get(`/api/tournament`);
-      body.tournament = tournament;
-      return body;
-    } catch (err) {
-      error({ statusCode: 404, message: `Tournament not found.` });
-    }
+    return body;
   },
 });
 </script>

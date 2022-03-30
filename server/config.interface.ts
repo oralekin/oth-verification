@@ -4,13 +4,11 @@ export interface ITournamentRole {
 }
 
 export interface ITournamentConfig {
-    name: string;
-    host: string;
     discord: {
         guildId: string;
         welcomeChannelId: string;
         ownerId: string;
-        roles: ITournamentRole[];
+        role: ITournamentRole;
     }
     domains: string[];
     dev: {

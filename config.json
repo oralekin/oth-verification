@@ -1,0 +1,19 @@
+{
+    "host": "test server",
+    "name": "my server",
+    "discord": {
+        "guildId": "958780084586684416",
+        "welcomeChannelId": "958780084586684422",
+        "ownerId": "166499030757670912",
+        "role": 
+            {
+                "id": "958780954447597598",
+                "name": "test role"
+            }
+        
+    },
+    "domains": [],
+    "dev": {
+        "https": false
+    }
+}

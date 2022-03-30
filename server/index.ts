@@ -15,6 +15,7 @@ import rateLimiterMiddleware from './RateLimiter';
 import { Scope } from "@oauth-everything/passport-discord";
 import { DiscordAuthentication } from './auth/DiscordAuth';
 import { OsuAuthentication } from './auth/OsuAuth';
+import { RedditAuthentication } from './auth/RedditAuth';
 import cors, { CorsOptions } from 'cors';
 import bodyParser from 'body-parser';
 import { container } from 'tsyringe';
@@ -106,11 +107,15 @@ export default class Server {
         // Initialise the authentication client for osu!
         const o = container.resolve<OsuAuthentication>(OsuAuthentication);
         app.use(`/auth${o.RootURL}`, o.router);
-
+        
         // Initialise the authentocation client for Discord. 
         container.register<DiscordAuthentication>(DiscordAuthentication, { useValue: new DiscordAuthentication([Scope.IDENTIFY, Scope.GUILDS_JOIN]) })
         const d = container.resolve(DiscordAuthentication);
         app.use(`/auth${d.RootURL}`, d.router);
+        
+        // Initialise the authentication client for osu!
+        const r = container.resolve<RedditAuthentication>(RedditAuthentication);
+        app.use(`/auth${r.RootURL}`, r.router);
 
         // Start the discord bot
         container.register<Client>(Client, { useValue: new DiscordBot() });
@@ -150,7 +155,7 @@ export default class Server {
                 key: fs.readFileSync('./server/cert/key.pem'),
                 cert: fs.readFileSync('./server/cert/cert.pem')
             }, app).listen(port, () => {
-                consola.ready(`Serving verifications for ${config.name} on http://localhost:${port}/`);
+                consola.ready(`Serving verifications for /r/osuplace Discord server on http://localhost:${port}/`);
             });
         } else 
             app.listen(port, host);

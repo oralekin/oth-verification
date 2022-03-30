@@ -1,6 +1,4 @@
 {
-    "host": "Example Host",
-    "name": "Example tournament name",
     "discord": {
         "guildId": "insert discord guild id here",
         "welcomeIdChannel": "insert channel id for welcome messages",

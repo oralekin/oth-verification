@@ -3,6 +3,7 @@ import { autoInjectable, singleton } from 'tsyringe';
 import Configuration from './Configuration';
 import { ITournamentConfig } from './config.interface';
 import consola from 'consola';
+import { IUser } from './auth/IUser';
 
 @singleton()
 @autoInjectable()
@@ -17,16 +18,18 @@ export default class DiscordBot extends Client {
         this.tourneyConfig = config.config;
 
         this.once('ready', () => {
-            console.log(`o!th bot is ready`)
+            console.log(`/r/osuplace bot is ready`)
         });
 
-        this.on('userVerified', async (guild: Guild, member: GuildMember) => {
+        this.on('userVerified', async (user: IUser, member: GuildMember) => {
             try {
 
+                const guild = this.guilds.cache.get(this.tourneyConfig.discord.guildId)!;
                 const channelId = this.tourneyConfig.discord.welcomeChannelId;
                 const channel = guild.channels.cache.get(channelId) as TextChannel;
+
                 
-                channel.send(`Welcome ${member} you are now verified!`)
+                channel.send(`${member} was verified as <https://osu.ppy.sh/users/${user.osu.id!}> and <https://reddit.com/u/${user.reddit.name}>`)
             } catch (e) {
                 consola.error(e);
             }
@@ -35,37 +38,23 @@ export default class DiscordBot extends Client {
         this.login(process.env.DISCORD_BOT_TOKEN)
     }
 
-    public async setUpUser(userId: string, nickname: string): Promise<void> {
+    public async setUpUser(user: IUser): Promise<void> {
         try {
-            const guildMember = await this.findGuildMember(userId);
+            const guildMember = await this.findGuildMember(user.discord.id!);
+
+            let nickname = `/u/${user.reddit.name}`
+            nickname = nickname.length > 32 ? (nickname.slice(0,31) + "…") : nickname;
 
             await this.changeNickName(nickname, guildMember);
-            consola.success(`Added ${nickname} nickname to ${userId}.`)
+            consola.success(`Added ${nickname} nickname to ${user.discord.id!}.`)
             
-            const roles = this.tourneyConfig.discord.roles;
-            const arr: string[] = [];
+            const role = this.tourneyConfig.discord.role;
 
-            roles.forEach(role => {
-                arr.push(role.id);
-            })
-            guildMember.roles.cache.forEach(role => {
-                arr.push(role.id);
-            });
-
-            consola.info(`Adding ${arr} roles to ${nickname}...`);
-
-            for (let i = 0; i < arr.length; i++) {
-                if (!guildMember.roles.cache.has(roles[i].id)) {
-                    try {
-                        consola.info(`Adding ${roles[i].id} to ${nickname}...`);
-                        await guildMember.roles.add(arr);
-                    } catch (e) {
-                        consola.error(`Failed to add ${roles[i].id} to ${nickname}.\nReason: ${e}`)
-                    }
-                }
+            consola.info(`Adding ${role.id} role to ${nickname}...`);
+            if (!guildMember.roles.cache.has(role.id)) {
+                guildMember.roles.add(role.id);
+                this.emit('userVerified', user, guildMember);
             }
-
-            this.emit('userVerified', guildMember.guild, guildMember);
 
         } catch(e) {
             console.error(e);
@@ -73,7 +62,7 @@ export default class DiscordBot extends Client {
     }
 
     private async findGuildMember(userId: string) {
-        const guild = this.guilds.cache.get("guildId");
+        const guild = this.guilds.cache.get(this.tourneyConfig.discord.guildId);
 
         if (guild === undefined)
             throw new Error("Invalid guild. Bot is likely not joined to the correct guild.");

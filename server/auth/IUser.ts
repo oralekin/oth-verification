@@ -12,5 +12,10 @@ export interface IUser {
         token?: string;
         joinDate?: DateTime;
     }
+    reddit: {
+        id?: string;
+        name?: string;
+        joinDate?: DateTime;
+    }
     failureReason?: string;
 }

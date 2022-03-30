@@ -28,6 +28,7 @@ Most of the code should be self-explanatory, but if parts aren't feel free to hi
     - Information you need:
         - Client ID (`OSU2_CLIENT_ID`)
         - Client Secret (`OSU2_CLIENT_SECRET`)
+- [reddit account & an OAuth2 application](https://www.reddit.com)
 
 Both these OAuth2 providers will request a callback URL in their forms. When developing locally you will need to add the following callback URLs for Discord and osu! respectively:
 - http://localhost:8000/auth/discord/cb (`DISCORD_CALLBACK_URL`)

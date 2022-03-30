@@ -1,7 +1,7 @@
 import config  from './config.json';
 
-const title = `${config.name} verification`;
-const description = `Verify your osu! account for ${config.name}`;
+const title = `/r/osuplace Discord verification`;
+const description = `Verify your osu! account for the /r/osuplace Discord server`;
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head

@@ -54,15 +54,12 @@ export class DiscordAuthentication extends AuthenticationClient {
         consola.success("Discord authentication routes are registered.")
     }
 
-    // If this returns 0 then it's successful
-    // If this returns 1 then guild member cannot join the guild (as a result of user reaching max guilds)
-    // If this returns -1 then there's some fuck up between discord api and the backend
-    private async discordJoin(userId: string, token: string, nickname: string): Promise<number> {
-        consola.info(`Attemptingto join ${userId} with ${nickname} to ${this.guildId}`);
+    protected async discordJoin(user: IUser): Promise<number> {
+        consola.info(`Attemptingto join ${user.discord.id!} to ${this.guildId}`);
         const client = container.resolve(Client) as DiscordBot;
         try {
-            const response = await axios.put(`https://discordapp.com/api/guilds/${this.guildId}/members/${userId}`, {
-                access_token: token,
+            const response = await axios.put(`https://discordapp.com/api/guilds/${this.guildId}/members/${user.discord.id!}`, {
+                access_token: user.discord.token!,
             }, {
                 headers: {
                     "Content-Type": "application/json",
@@ -72,12 +69,12 @@ export class DiscordAuthentication extends AuthenticationClient {
 
             // User has joined the guild through the request
             if (response.status === 201)
-                consola.success(`Joined ${userId} to the server!`)
+                consola.success(`Joined ${user.discord.id!} to the server!`)
             // User was already in the server.
             else if (response.status === 204)
                 consola.success("User already in guild");
 
-            await client.setUpUser(userId, nickname);
+            await client.setUpUser(user);
             return 0;
         } catch (e) {
             const error = e as AxiosError;
@@ -90,29 +87,37 @@ export class DiscordAuthentication extends AuthenticationClient {
             // Apparently this means the user has reached max guild.
             // So handle like a valid response. 
             if (error.response.status === 400) {
-                consola.info(`${userId} has reached max guilds, checking if user is present in guild...`);
-                const exists = await client.guildMemberExists(userId);
+                consola.info(`${user.discord.id!} has reached max guilds, checking if user is present in guild...`);
+                const exists = await client.guildMemberExists(user.discord.id!);
                 if (exists) {
-                    client.setUpUser(userId, nickname);
+                    client.setUpUser(user);
                     return 0;
                 }
                 else
                     return 1;
             }
 
-            consola.error(`An error occured while trying to join ${userId} Detailed error description: ${e}`);
+            consola.error(`An error occured while trying to join ${user.discord.id!} Detailed error description: ${e}`);
             return -1;
         }
     }
 
+
+    
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected callbackMiddleWare(req: Request, res: Response, next: NextFunction): void {
+        
+        // If this returns 0 then it's successful
+        // If this returns 1 then guild member cannot join the guild (as a result of user reaching max guilds)
+        // If this returns -1 then there's some fuck up between discord api and the backend
+        
+        
+        
         const user = req.user as IUser;
-
-        // Typescript being scuffed on overridden functions from parent class.
-        const d = this as DiscordAuthentication;
+        console.dir(user);
+        const d = container.resolve(DiscordAuthentication) as DiscordAuthentication;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const success = d.discordJoin(user.discord.id!, user.discord.token!, user.osu.displayName!);
+        const success = d.discordJoin(user);
         success.then(value => {
             if (value === 1)
                 res.redirect('/full');
