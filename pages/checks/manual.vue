@@ -1,8 +1,7 @@
 <template>
   <div id="start">
     <div>
-      <h1>Manual verification required</h1>
-      <p>Please ping the @Moderators role in the verification channel with a screenshot of this page.</p>
+      <h1>Access Denied</h1>
       <p>Reason: {{ reason }}</p>
     </div>
   </div>
@@ -16,7 +15,7 @@ export default Vue.extend({
     if (process.server) {
       const r: any = req;
       const user: IUser = r.session.passport.user;
-      const reason = user.failureReason || 'Blame subject';
+      const reason = user.failureReason || 'No reason provided';
       return { reason }
     }
   }

@@ -14,7 +14,7 @@
           Verify that you are an osu! player.
         </li>
         <li>
-          Verify that your osu! account was made before the 2022 April Fools event was announced.
+          Verify that your osu! account was made before March 20 2022.
         </li>
         <li><s>
           Verify that your top play is not mapped by Sotarks.
@@ -26,7 +26,7 @@
           Read your username to change your Discord nickname to.
         </li>
         <li>
-          Verify that your Reddit account was made before this year's event began.
+          Verify that your Reddit account was made before March 20 2022.
         </li>
       </ul>
       <p>Your Discord account information will be used to: </p>

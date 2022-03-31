@@ -1,16 +1,18 @@
-import { Client, Guild, GuildMember, Intents, TextChannel } from 'discord.js';
+import { Client, Guild, GuildMember, Intents, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { autoInjectable, singleton } from 'tsyringe';
 import Configuration from './Configuration';
 import { ITournamentConfig } from './config.interface';
 import consola from 'consola';
 import { IUser } from './auth/IUser';
 
+// const ALLOWED_ROLE = process.env.DISCORD_STAFF_ROLE!;
+
 @singleton()
 @autoInjectable()
 export default class DiscordBot extends Client {
     private tourneyConfig: ITournamentConfig;
     constructor(config?: Configuration) {
-        super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS], partials: ['USER'] });
+        super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES], partials: ['USER'] });
 
         if (!config)
             throw new Error("Configuration file not successfully injected.");
@@ -18,7 +20,9 @@ export default class DiscordBot extends Client {
         this.tourneyConfig = config.config;
 
         this.once('ready', () => {
-            console.log(`/r/osuplace bot is ready`)
+            console.log(`/r/osuplace bot is ready`);
+
+            (this.user!).setActivity("go to o.ralek.in to verify")
         });
 
         this.on('userVerified', async (user: IUser, member: GuildMember) => {
@@ -35,7 +39,35 @@ export default class DiscordBot extends Client {
             }
         });
 
-        this.login(process.env.DISCORD_BOT_TOKEN)
+/*         this.on("messageCreate", (m: Message) => {
+            console.log("message from " + m.author.username)
+            console.log("has the role: " + (m.member!).roles.cache.has(ALLOWED_ROLE) )
+            if ((m.guild) && (m.member!).roles.cache.has(ALLOWED_ROLE) && m.content.startsWith("!uinfo ")) {
+                const infoUser = (m.guild!).members.cache.get(m.content.slice(7))
+                if (!infoUser) {
+                    m.reply("user with id " + m.content.slice(7) + " not found");
+                    return;
+                }
+
+                infoUser!;
+
+                m.reply({embeds: [
+                    new MessageEmbed()
+                        .setColor("#ff66aa")
+                        .setTitle('user info')
+                        .setAuthor({ name: 'osuplace bot' })
+                        .addFields(
+                            { name: 'username', value: infoUser.displayName + "(" + infoUser.user.username + "#" + infoUser.user.discriminator + ")" },
+                            { name: 'joined discord at', value: infoUser.joinedAt ? infoUser.user.createdAt.toISOString() : "not in server" },
+                            { name: 'joined server at', value: infoUser.joinedAt ? infoUser.joinedAt.toISOString() : "not in server" },
+                            { name: "roles", value: infoUser.roles.cache.reduce((prev, val) => prev + ", " + val.name, "")},
+                            )
+                    
+                ]});
+            }
+        })
+
+ */        this.login(process.env.DISCORD_BOT_TOKEN)
     }
 
     public async setUpUser(user: IUser): Promise<void> {

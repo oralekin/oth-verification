@@ -62,7 +62,7 @@ export class OsuAuthentication extends AuthenticationClient {
     // Alternatively you can remove everything in the body and just keep: res.redirect('/checks/discord');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected callbackMiddleWare(req: Request, res: Response, next: NextFunction): void {
-        const limit = DateTime.fromISO("2022-03-26T00:00:00Z");
+        const limit = DateTime.fromISO("2022-03-20T00:00:00Z");
         const u = req.user as IUser;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const userJoinDate = u.osu.joinDate!;
@@ -72,8 +72,7 @@ export class OsuAuthentication extends AuthenticationClient {
             res.redirect('/auth/reddit');
         // User failed verification so we redirect somewhere else for manual intervention or can customise the error.
          else {
-            u.failureReason = "osu! account is not older than a week yet";
-            consola.info(`${u.osu.displayName} joined on ${userJoinDate} needs manual verification.`)
+            u.failureReason = "osu! account was made after r/place was announced";
             res.redirect('/checks/manual');
         }
     }

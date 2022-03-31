@@ -2,12 +2,12 @@
     "host": "test server",
     "name": "my server",
     "discord": {
-        "guildId": "958780084586684416",
-        "welcomeChannelId": "958780084586684422",
+        "guildId": "297657542572507137",
+        "welcomeChannelId": "297657542572507137",
         "ownerId": "166499030757670912",
         "role": 
             {
-                "id": "958780954447597598",
+                "id": "958292223642988575",
                 "name": "Verified"
             }
         

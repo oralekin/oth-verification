@@ -112,9 +112,7 @@ export class DiscordAuthentication extends AuthenticationClient {
         // If this returns -1 then there's some fuck up between discord api and the backend
         
         
-        
         const user = req.user as IUser;
-        console.dir(user);
         const d = container.resolve(DiscordAuthentication) as DiscordAuthentication;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const success = d.discordJoin(user);

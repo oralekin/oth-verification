@@ -39,7 +39,8 @@ export class RedditAuthentication extends AuthenticationClient {
 
                 o.reddit.id = profile.id; 
                 o.reddit.name = profile.name;
-                o.reddit.joinDate = DateTime.fromMillis(profile._json.created);
+                o.reddit.joinDate = DateTime.fromSeconds(profile._json.created);
+
 
                 return cb(null, o);
             }
@@ -55,7 +56,7 @@ export class RedditAuthentication extends AuthenticationClient {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected callbackMiddleWare(req: Request, res: Response, next: NextFunction): void {
         
-        const aprilFools = DateTime.fromISO("2012-04-01T00:00:00-04");
+        const aprilFools = DateTime.fromISO("2022-03-20T00:00:00Z");
         const u = req.user as IUser;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const userJoinDate = u.reddit.joinDate!;
