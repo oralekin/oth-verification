@@ -8,11 +8,11 @@
         "role": 
             {
                 "id": "958780954447597598",
-                "name": "test role"
+                "name": "Verified"
             }
         
     },
-    "domains": [],
+    "domains": [ "o.ralek.in" ],
     "dev": {
         "https": false
     }

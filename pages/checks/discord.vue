@@ -15,7 +15,7 @@
       <ul>
         <li>Join your account to the server, if you haven't yet.</li>
         <li>
-          Change the nickname on the discord server to your osu! username.
+          Change the nickname on the discord server to your Reddit username{{ ` (${ name || "" })` }}.
         </li>
         <li>Add the following roles to your account on the server:</li>
       </ul>
